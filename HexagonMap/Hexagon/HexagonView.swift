@@ -66,10 +66,7 @@ struct HexagonView: View {
 #Preview {
     @Previewable @StateObject var model = HexagonViewModel()
     let hexagon = UnitHexagon(
-        id: HexagonCoordinate(row: 0, col: 0), dropArea: nil,
-        unit: Unit(
-            type: .foot, color: .german,
-            hexagon: HexagonCoordinate(row: 0, col: 0)))
+        id: HexagonCoordinate(row: 0, col: 0), dropArea: nil, unit: Unit(type: .foot, color: .german, hexagon: HexagonCoordinate(row: 0, col: 0)))
 
     HexagonView(hexagon: hexagon)
         .environmentObject(model)

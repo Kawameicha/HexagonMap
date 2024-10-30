@@ -1,19 +1,16 @@
 //
-//  ChessBoardSquare.swift
+//  UnitHexagon.swift
 //  HexagonMap
 //
 //  Created by Christoph Freier on 28.10.24.
 //
 
-
-
 import SwiftUI
-import DragAndDrop
 
-struct ChessBoardSquare: Identifiable, DropReceiver {
-    let id: Int
+struct UnitHexagon: Identifiable, DropReceiver {
+    let id: HexagonCoordinate
     var dropArea: CGRect? = nil
-    
-    var piece: Piece? = nil
+
+    var unit: Unit? = nil
     var legalDropTarget: DragState = .none
 }

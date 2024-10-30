@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct HexagonMapApp: App {
+    @StateObject private var model = HexagonViewModel()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(model)
         }
     }
 }

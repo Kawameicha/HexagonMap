@@ -5,8 +5,6 @@
 //  Created by Christoph Freier on 28.10.24.
 //
 
-
-
 import SwiftUI
 
 struct UnitView: View {
@@ -16,17 +14,16 @@ struct UnitView: View {
         pieceImage()
             .resizable()
             .scaledToFit()
-//            .blending(color: Color(unit.color == .german ? .red : .black))
     }
-    
+
     func pieceImage() -> Image {
         switch unit.type {
         case .foot:
-            return Image("chess-pawn")
+            return Image("foot")
         case .tracked:
-            return Image("chess-pawn")
+            return Image("tracked")
         case .wheeled:
-            return Image("chess-pawn")
+            return Image("wheeled")
         }
     }
 }

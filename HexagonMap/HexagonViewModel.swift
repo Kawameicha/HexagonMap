@@ -1,5 +1,5 @@
 //
-//  BoardViewModel.swift
+//  HexagonViewModel.swift
 //  HexagonMap
 //
 //  Created by Christoph Freier on 29.10.24.
@@ -7,90 +7,112 @@
 
 import SwiftUI
 
-class BoardViewModel: DropReceivableObservableObject {
+class HexagonViewModel: DropReceivableObservableObject {
     typealias DropReceivable = UnitHexagon
-    @Published var unitHexagon: [UnitHexagon]
-    @Published var pieceDidMoveFrom: Int? = nil
+    @Published var unitHexagon: [HexagonCoordinate: UnitHexagon] = [:]
+    @Published var pieceDidMoveFrom: HexagonCoordinate? = nil
 
     func setDropArea(_ dropArea: CGRect, on dropReceiver: UnitHexagon) {
-        hexagonBoard[dropReceiver.id].updateDropArea(with: dropArea)
+        unitHexagon[dropReceiver.id]?.updateDropArea(with: dropArea)
     }
 
-    // Assuming an 8x8 board, this method retrieves squares for each row
-//    func getRowOfSquares(rowNumber: Int) -> [UnitHexagon] {
-//        let startIndex = rowNumber * 8
-//        let endIndex = startIndex + 8
-//        return Array(hexagonBoard[startIndex..<endIndex])
-//    }
-
     func setLegalDropTargets() {
-        for index in 0..<unitHexagon.count {
-            unitHexagon[index].legalDropTarget = getDropLegalState(at: index)
+        for coordinate in unitHexagon.keys {
+            unitHexagon[coordinate]?.legalDropTarget = getDropLegalState(
+                at: coordinate)
         }
     }
 
-    private func getDropLegalState(at square: Int) -> DragState {
-        if let origin = pieceDidMoveFrom,
-           square != origin,
-           let piece = unitHexagon[origin].unit
-        {
-            switch piece.type {
-            case .foot:
-                if [
-                    origin + 1, origin - 1, origin + 8, origin - 8, origin + 9,
-                    origin - 7,
-                ].contains(square) {
-                    return .accepted
-                } else {
-                    return .rejected
-                }
-            case .tracked:
-                if ((square - origin) % 7 == 0) || ((square - origin) % 9 == 0)
-                    || ((square - origin) % 8 == 0)
-                    || (Int(origin / 8) == Int(square / 8))
-                {
-                    return .accepted
-                } else {
-                    return .rejected
-                }
-            case .wheeled:
-                if ((square - origin) % 7 == 0) || ((square - origin) % 9 == 0)
-                {
-                    return .accepted
-                } else {
-                    return .rejected
-                }
-            }
+    private func getDropLegalState(at hexagon: HexagonCoordinate) -> DragState {
+        guard let origin = pieceDidMoveFrom,
+            hexagon != origin,
+            let unit = unitHexagon[origin]?.unit
+        else {
             return .none
         }
 
-        func movePiece(location: CGPoint) -> Bool {
-            if let index = unitHexagon.firstIndex(where: {
-                $0.getDropArea()!.contains(location)
-            }),
-               unitHexagon[index].legalDropTarget == .accepted,
-               let movingPiece = unitHexagon[pieceDidMoveFrom!].unit
-            {
-                unitHexagon[index].unit = Unit(
-                    type: movingPiece.type, color: movingPiece.color, hexagon: HexagonCoordinate(row: <#T##Int#>, col: <#T##Int#>))
-                unitHexagon[pieceDidMoveFrom!].unit = nil
-                clearPieceOrigin()
-                setLegalDropTargets()
-                return true
+        switch unit.type {
+        case .foot, .tracked, .wheeled:
+            if origin.col.isMultiple(of: 2) {
+                let nearbyPositions = [
+                    HexagonCoordinate(row: origin.row - 1, col: origin.col - 1),
+                    HexagonCoordinate(row: origin.row, col: origin.col - 1),
+                    HexagonCoordinate(row: origin.row - 1, col: origin.col),
+                    HexagonCoordinate(row: origin.row + 1, col: origin.col),
+                    HexagonCoordinate(row: origin.row - 1, col: origin.col + 1),
+                    HexagonCoordinate(row: origin.row, col: origin.col + 1),
+                ]
+                return nearbyPositions.contains(hexagon) ? .accepted : .rejected
+            } else {
+                let nearbyPositions = [
+                    HexagonCoordinate(row: origin.row, col: origin.col - 1),
+                    HexagonCoordinate(row: origin.row + 1, col: origin.col - 1),
+                    HexagonCoordinate(row: origin.row - 1, col: origin.col),
+                    HexagonCoordinate(row: origin.row + 1, col: origin.col),
+                    HexagonCoordinate(row: origin.row, col: origin.col + 1),
+                    HexagonCoordinate(row: origin.row + 1, col: origin.col + 1),
+                ]
+                return nearbyPositions.contains(hexagon) ? .accepted : .rejected
             }
-            return false
         }
+    }
 
-        func setPieceOrigin(_ square: Int) {
-            if pieceDidMoveFrom == nil {
-                pieceDidMoveFrom = square
+    func movePiece(location: CGPoint) -> Bool {
+        if let destinationCoordinate = unitHexagon.first(where: {
+            $0.value.dropArea?.contains(location) == true
+        })?.key,
+            unitHexagon[destinationCoordinate]?.legalDropTarget == .accepted,
+            let movingPiece = unitHexagon[pieceDidMoveFrom!]?.unit
+        {
+
+            unitHexagon[destinationCoordinate]?.unit = Unit(
+                type: movingPiece.type, color: movingPiece.color,
+                hexagon: destinationCoordinate)
+            unitHexagon[pieceDidMoveFrom!]?.unit = nil
+            clearPieceOrigin()
+            setLegalDropTargets()
+            return true
+        }
+        return false
+    }
+
+    func setPieceOrigin(_ hexagon: HexagonCoordinate) {
+        if pieceDidMoveFrom == nil {
+            pieceDidMoveFrom = hexagon
+        }
+    }
+
+    func clearPieceOrigin() {
+        pieceDidMoveFrom = nil
+    }
+
+    init() {
+        let initialFootCoordinate = HexagonCoordinate(row: 2, col: 2)
+        let initialFootUnit = Unit(
+            type: .foot, color: .german, hexagon: initialFootCoordinate)
+        let initialTrackedCoordinate = HexagonCoordinate(row: 3, col: 3)
+        let initialTrackedUnit = Unit(
+            type: .wheeled, color: .german, hexagon: initialTrackedCoordinate)
+
+        let columns = 17
+        let evenColumnRows = 12
+        let oddColumnRows = 11
+
+        for column in 0..<columns {
+            let rows = column.isMultiple(of: 2) ? evenColumnRows : oddColumnRows
+            for row in 0..<rows {
+                let coordinate = HexagonCoordinate(row: row, col: column)
+                if coordinate == initialFootCoordinate {
+                    unitHexagon[coordinate] = UnitHexagon(
+                        id: coordinate, dropArea: nil, unit: initialFootUnit)
+                } else if coordinate == initialTrackedCoordinate {
+                    unitHexagon[coordinate] = UnitHexagon(
+                        id: coordinate, dropArea: nil, unit: initialTrackedUnit)
+                } else {
+                    unitHexagon[coordinate] = UnitHexagon(
+                        id: coordinate, dropArea: nil, unit: nil)
+                }
             }
         }
-
-        func clearPieceOrigin() {
-            pieceDidMoveFrom = nil
-        }
-
-        // init()
     }
 }
