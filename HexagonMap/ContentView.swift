@@ -42,7 +42,6 @@ struct ContentView: View {
         HexagonGrid(cells) { cell in
             if let unitHexagon = model.unitHexagon[cell.offsetCoordinate] {
                 HexagonView(hexagon: unitHexagon)
-                    .frame(width: 33, height: 33)
                     .overlay(alignment: .top) {
                         if unitHexagon.unit == nil {
                             Text(

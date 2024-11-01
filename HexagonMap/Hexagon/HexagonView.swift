@@ -12,36 +12,39 @@ struct HexagonView: View {
     let hexagon: UnitHexagon
 
     var body: some View {
-        ZStack {
-            Hexagon()
-                .overlay(
-                    Hexagon()
-                        .fill(
-                            Color.green.opacity(
-                                hexagon.legalDropTarget == .accepted ? 0.3 : 0))
-                )
-                .dropReceiver(
-                    for: model.unitHexagon[hexagon.id]
-                        ?? UnitHexagon(id: HexagonCoordinate(row: 0, col: 0)),
-                    model: model)
-            Hexagon()
-                .overlay(
-                    Hexagon()
-                        .stroke(Color.green, lineWidth: 4)
-                )
-                .opacity(hexagon.legalDropTarget == .accepted ? 1 : 0)
-            switch hexagon.unit {
-            case .none:
-                EmptyView()
-            case .some(let unit):
-                UnitView(unit: unit)
-                    .dragable(
-                        object: unit,
-                        onDragObject: onDragPiece,
-                        onDropped: onDropPiece)
+        GeometryReader { geometry in
+            ZStack {
+                Hexagon()
+                    .overlay(
+                        Hexagon()
+                            .fill(
+                                Color.green.opacity(
+                                    hexagon.legalDropTarget == .accepted ? 0.3 : 0))
+                    )
+                    .dropReceiver(
+                        for: model.unitHexagon[hexagon.id]
+                            ?? UnitHexagon(id: HexagonCoordinate(row: 0, col: 0)),
+                        model: model)
+
+                Hexagon()
+                    .overlay(
+                        Hexagon()
+                            .stroke(Color.green, lineWidth: 4)
+                    )
+                    .opacity(hexagon.legalDropTarget == .accepted ? 1 : 0)
+
+                if let unit = hexagon.unit {
+                    UnitView(unit: unit)
+                        .frame(width: geometry.size.width * 0.6,
+                               height: geometry.size.height * 0.6)
+                        .dragable(
+                            object: unit,
+                            onDragObject: onDragPiece,
+                            onDropped: onDropPiece)
+                }
             }
+            .scaledToFit()
         }
-        .scaledToFit()
     }
 
     func onDragPiece(piece: Dragable, position: CGPoint) -> DragState {
@@ -65,8 +68,7 @@ struct HexagonView: View {
 
 #Preview {
     @Previewable @StateObject var model = HexagonViewModel()
-    let hexagon = UnitHexagon(
-        id: HexagonCoordinate(row: 0, col: 0), dropArea: nil, unit: Unit(type: .foot, color: .german, hexagon: HexagonCoordinate(row: 0, col: 0)))
+    let hexagon = UnitHexagon(id: HexagonCoordinate(row: 0, col: 0), dropArea: nil, unit: Unit.mockUnit)
 
     HexagonView(hexagon: hexagon)
         .environmentObject(model)
