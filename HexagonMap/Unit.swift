@@ -13,6 +13,7 @@ struct Unit: Dragable {
     var costMove: Int? = 0
     var attackSoft: Int? = 0
     var attackArmored: Int? = 0
+    var range: Int? = 0
     var defenseFlank: Int? = 0
     var defenseFront: Int? = 0
     var type: PieceType
@@ -33,6 +34,6 @@ struct Unit: Dragable {
 
 extension Unit {
     static var mockUnit: Unit {
-        Unit(name: "Rifles '41", costAttack: 3, costMove: 1, attackSoft: 2, attackArmored: 0, defenseFlank: 11, defenseFront: 12, type: .foot, color: .german, hexagon: HexagonCoordinate(row: 1, col: 1))
+        Unit(name: "Rifles '41", costAttack: 3, costMove: 1, attackSoft: 2, attackArmored: 0, range: 5, defenseFlank: 11, defenseFront: 12, type: .foot, color: .german, hexagon: HexagonCoordinate(row: 1, col: 1))
     }
 }

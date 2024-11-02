@@ -15,6 +15,7 @@ struct HexagonView: View {
         GeometryReader { geometry in
             ZStack {
                 Hexagon()
+                    .stroke(Color.black, lineWidth: 0)
                     .overlay(
                         Hexagon()
                             .fill(
@@ -27,6 +28,7 @@ struct HexagonView: View {
                         model: model)
 
                 Hexagon()
+                    .stroke(Color.black, lineWidth: 0)
                     .overlay(
                         Hexagon()
                             .stroke(Color.green, lineWidth: 4)
@@ -35,15 +37,14 @@ struct HexagonView: View {
 
                 if let unit = hexagon.unit {
                     UnitView(unit: unit)
-                        .frame(width: geometry.size.width * 0.6,
-                               height: geometry.size.height * 0.6)
+                        .frame(width: geometry.size.width * 0.7,
+                               height: geometry.size.height * 0.7)
                         .dragable(
                             object: unit,
                             onDragObject: onDragPiece,
                             onDropped: onDropPiece)
                 }
             }
-            .scaledToFit()
         }
     }
 

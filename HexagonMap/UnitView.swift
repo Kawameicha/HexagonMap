@@ -15,32 +15,36 @@ struct UnitView: View {
             VStack {
                 HStack {
                     if let cost = unit.costAttack {
-                        Text("\(cost)")
+                        Text(" \(cost)")
                     }
                     Spacer()
                     Text(unit.name)
-                        .font(.caption)
+                        .font(.system(size: 6))
                     Spacer()
                     if let cost = unit.costMove {
-                        Text("\(cost)")
+                        Text("\(cost) ")
                             .foregroundStyle(unit.type == .foot ? .red : .blue)
                     }
                 }
                 .fontWeight(.bold)
                 .foregroundStyle(.black)
                 Spacer()
-                HStack {
+                HStack(alignment: .bottom) {
                     VStack {
                         if let attack = unit.attackSoft {
-                            Text("\(attack)")
+                            Text("\(attack) ")
                                 .foregroundStyle(.red)
                         }
-                        if let value = unit.attackArmored {
-                            Text("\(value)")
+                        if let attack = unit.attackArmored {
+                            Text("\(attack) ")
                                 .foregroundStyle(.blue)
                         }
                     }
+                    .frame(width: 15)
                     .fontWeight(.bold)
+                    Spacer()
+                    UnitSymbol(unit: unit)
+                        .frame(width: 20)
                     Spacer()
                         VStack {
                             if let defense = unit.defenseFlank {
@@ -52,6 +56,7 @@ struct UnitView: View {
                                 Text("\(defense)")
                             }
                         }
+                        .frame(width: 20)
                         .fontWeight(.bold)
                         .foregroundStyle(unit.type == .foot ? .red : .blue)
                 }
@@ -62,6 +67,7 @@ struct UnitView: View {
                 .scaledToFit()
                 .padding()
         }
+        .aspectRatio(1.0, contentMode: .fit)
         .background(RoundedRectangle(cornerRadius: 9, style: .continuous)
             .fill(Color("\(unit.color)")))
     }

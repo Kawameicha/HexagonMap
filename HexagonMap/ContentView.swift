@@ -13,11 +13,6 @@ struct HexagonCell: Identifiable, OffsetCoordinateProviding {
     var colorName = Color(.clear)
 }
 
-func rowToLetter(row: Int) -> String {
-    guard row > 0, row <= 26 else { return "?" }
-    return String(UnicodeScalar(64 + row)!)
-}
-
 struct ContentView: View {
     @EnvironmentObject var model: HexagonViewModel
 
@@ -39,21 +34,23 @@ struct ContentView: View {
     }()
 
     var body: some View {
-        HexagonGrid(cells) { cell in
-            if let unitHexagon = model.unitHexagon[cell.offsetCoordinate] {
-                HexagonView(hexagon: unitHexagon)
-                    .overlay(alignment: .top) {
-                        if unitHexagon.unit == nil {
-                            Text(
-                                "\(rowToLetter(row: cell.offsetCoordinate.row + 1))\(cell.offsetCoordinate.col + 1)"
-                            )
-                            .font(.system(size: 6))
-                            .foregroundColor(.black)
-                            .offset(y: 3)
-                        }
+        NavigationSplitView {
+
+        } detail: {
+            ZStack {
+                Image("AtB_Planning_Map_1_Plains")
+                    .resizable()
+                    .scaledToFit()
+
+                HexagonGrid(cells) { cell in
+                    if let unitHexagon = model.unitHexagon[cell.offsetCoordinate] {
+                        HexagonView(hexagon: unitHexagon)
+                            .overlay(alignment: .top) {
+                            }
+                            .zIndex(
+                                model.pieceDidMoveFrom == cell.offsetCoordinate ? 1 : 0)
                     }
-                    .zIndex(
-                        model.pieceDidMoveFrom == cell.offsetCoordinate ? 1 : 0)
+                }
             }
         }
     }
