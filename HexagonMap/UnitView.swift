@@ -11,41 +11,61 @@ struct UnitView: View {
     let unit: Unit
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .center) {
+            pieceImage()
+                .resizable()
+                .scaledToFit()
+                .padding(10)
+
             VStack {
-                HStack {
-                    if let cost = unit.costAttack {
-                        Text(" \(cost)")
-                    }
-                    Spacer()
-                    Text(unit.name)
-                        .font(.system(size: 6))
-                    Spacer()
-                    if let cost = unit.costMove {
-                        Text("\(cost) ")
-                            .foregroundStyle(unit.type == .foot ? .red : .blue)
+                HStack(alignment: .top) {
+                    ZStack(alignment: .top) {
+                        if let cost = unit.costAttack {
+                            Text("\(cost)")
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+
+                        Spacer()
+
+                        if let cost = unit.costMove {
+                            Text("\(cost)")
+                                .foregroundStyle(unit.type == .foot ? .red : .blue)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                        }
+
+                        UnitFacing(unit: unit)
+                            .frame(width: 60, height: 40)
+                            .offset(y: -15)
+                        GeometryReader { geometry in
+                            Text(unit.name)
+                                .font(.system(size: 8))
+                                .fontWeight(.regular)
+                                .frame(width: geometry.size.width, alignment: .center)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
-                .fontWeight(.bold)
-                .foregroundStyle(.black)
+
                 Spacer()
+
                 HStack(alignment: .bottom) {
-                    VStack {
-                        if let attack = unit.attackSoft {
-                            Text("\(attack) ")
-                                .foregroundStyle(.red)
+                    ZStack(alignment: .bottom) {
+                        VStack {
+                            if let attack = unit.attackSoft {
+                                Text("\(attack)")
+                                    .foregroundStyle(.red)
+                            }
+                            if let attack = unit.attackArmored {
+                                Text("\(attack)")
+                                    .foregroundStyle(.blue)
+                            }
                         }
-                        if let attack = unit.attackArmored {
-                            Text("\(attack) ")
-                                .foregroundStyle(.blue)
-                        }
-                    }
-                    .frame(width: 15)
-                    .fontWeight(.bold)
-                    Spacer()
-                    UnitSymbol(unit: unit)
-                        .frame(width: 20)
-                    Spacer()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                        Spacer()
+
                         VStack {
                             if let defense = unit.defenseFlank {
                                 Text("\(defense)")
@@ -56,20 +76,35 @@ struct UnitView: View {
                                 Text("\(defense)")
                             }
                         }
-                        .frame(width: 20)
-                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
                         .foregroundStyle(unit.type == .foot ? .red : .blue)
+
+                        UnitSymbol(unit: unit)
+                            .frame(width: 20)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
                 }
             }
-
-            pieceImage()
-                .resizable()
-                .scaledToFit()
-                .padding()
+            .padding(4)
+            .cornerRadius(4)
+            .fontWeight(.bold)
+            .foregroundStyle(.black)
         }
         .aspectRatio(1.0, contentMode: .fit)
         .background(RoundedRectangle(cornerRadius: 9, style: .continuous)
             .fill(Color("\(unit.color)")))
+        .rotationEffect(rotationAngle(for: unit.orientation))
+    }
+
+    func rotationAngle(for orientation: Unit.PieceOrientation) -> Angle {
+        switch orientation {
+        case .N: return .degrees(0)
+        case .NE: return .degrees(60)
+        case .SE: return .degrees(120)
+        case .S: return .degrees(180)
+        case .SW: return .degrees(240)
+        case .NW: return .degrees(300)
+        }
     }
 
     func pieceImage() -> Image {
@@ -85,5 +120,5 @@ struct UnitView: View {
 }
 
 #Preview {
-    UnitView(unit: Unit.mockUnit)
+    UnitView(unit: Unit.mockGerman)
 }

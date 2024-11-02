@@ -114,5 +114,10 @@ struct StarShape: Shape {
 }
 
 #Preview {
-    UnitSymbol(unit: Unit.mockUnit)
+    HStack {
+        UnitSymbol(unit: Unit.mockGerman)
+        UnitSymbol(unit: Unit.mockRussian)
+    }
+    .aspectRatio(1.0, contentMode: .fit)
+    .frame(width: 50, height: 50)
 }

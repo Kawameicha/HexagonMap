@@ -11,6 +11,11 @@ class HexagonViewModel: DropReceivableObservableObject {
     typealias DropReceivable = UnitHexagon
     @Published var unitHexagon: [HexagonCoordinate: UnitHexagon] = [:]
     @Published var pieceDidMoveFrom: HexagonCoordinate? = nil
+    @Published var selectedHexagon: HexagonCoordinate?
+
+    func selectHexagon(_ coordinate: HexagonCoordinate) {
+            selectedHexagon = coordinate
+        }
 
     func setDropArea(_ dropArea: CGRect, on dropReceiver: UnitHexagon) {
         unitHexagon[dropReceiver.id]?.updateDropArea(with: dropArea)
@@ -67,6 +72,7 @@ class HexagonViewModel: DropReceivableObservableObject {
 
             unitHexagon[destinationCoordinate]?.unit = Unit(
                 name: movingPiece.name,
+                orientation: movingPiece.orientation,
                 costAttack: movingPiece.costAttack,
                 costMove: movingPiece.costMove,
                 attackSoft: movingPiece.attackSoft,
@@ -97,9 +103,9 @@ class HexagonViewModel: DropReceivableObservableObject {
 
     init() {
         let initialFootCoordinate = HexagonCoordinate(row: 3, col: 3)
-        let initialFootUnit = Unit(name: "Rifles '41", costAttack: 3, costMove: 1, attackSoft: 2, attackArmored: 0, defenseFlank: 11, defenseFront: 12, type: .foot, color: .german, hexagon: initialFootCoordinate)
+        let initialFootUnit = Unit(name: "Rifles '41", orientation: .SE, costAttack: 3, costMove: 1, attackSoft: 2, attackArmored: 0, defenseFlank: 11, defenseFront: 12, type: .foot, color: .german, hexagon: initialFootCoordinate)
         let initialTrackedCoordinate = HexagonCoordinate(row: 9, col: 9)
-        let initialTrackedUnit = Unit(name: "T-34a", costAttack: 5, costMove: 1, attackSoft: 5, attackArmored: 7, defenseFlank: 15, defenseFront: 19, type: .tracked, color: .russian, hexagon: initialTrackedCoordinate)
+        let initialTrackedUnit = Unit(name: "T-34a", orientation: .NW, costAttack: 5, costMove: 1, attackSoft: 5, attackArmored: 7, defenseFlank: 15, defenseFront: 19, type: .tracked, color: .russian, hexagon: initialTrackedCoordinate)
 
         let columns = 17
         let evenColumnRows = 12

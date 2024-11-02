@@ -69,7 +69,7 @@ struct HexagonView: View {
 
 #Preview {
     @Previewable @StateObject var model = HexagonViewModel()
-    let hexagon = UnitHexagon(id: HexagonCoordinate(row: 0, col: 0), dropArea: nil, unit: Unit.mockUnit)
+    let hexagon = UnitHexagon(id: HexagonCoordinate(row: 0, col: 0), dropArea: nil, unit: Unit.mockGerman)
 
     HexagonView(hexagon: hexagon)
         .environmentObject(model)

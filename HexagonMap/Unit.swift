@@ -9,6 +9,7 @@ import Foundation
 
 struct Unit: Dragable {
     var name: String
+    var orientation: PieceOrientation
     var costAttack: Int? = 0
     var costMove: Int? = 0
     var attackSoft: Int? = 0
@@ -19,6 +20,10 @@ struct Unit: Dragable {
     var type: PieceType
     var color: PieceColor
     var hexagon: HexagonCoordinate
+
+    enum PieceOrientation{
+        case N, NE, SE, S, SW, NW
+    }
 
     enum PieceType {
         case foot
@@ -33,7 +38,10 @@ struct Unit: Dragable {
 }
 
 extension Unit {
-    static var mockUnit: Unit {
-        Unit(name: "Rifles '41", costAttack: 3, costMove: 1, attackSoft: 2, attackArmored: 0, range: 5, defenseFlank: 11, defenseFront: 12, type: .foot, color: .german, hexagon: HexagonCoordinate(row: 1, col: 1))
+    static var mockGerman: Unit {
+        Unit(name: "Rifles '41", orientation: .N,  costAttack: 3, costMove: 1, attackSoft: 2, attackArmored: 0, range: 5, defenseFlank: 11, defenseFront: 12, type: .foot, color: .german, hexagon: HexagonCoordinate(row: 1, col: 1))
+    }
+    static var mockRussian: Unit {
+        Unit(name: "Rifles '41", orientation: .N,  costAttack: 3, costMove: 1, attackSoft: 2, attackArmored: 0, range: 5, defenseFlank: 11, defenseFront: 12, type: .foot, color: .russian, hexagon: HexagonCoordinate(row: 1, col: 1))
     }
 }
