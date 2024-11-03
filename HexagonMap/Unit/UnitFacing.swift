@@ -18,6 +18,7 @@ struct UnitFacing: View {
             WhitePolygon()
                 .fill(Color.white)
         }
+        .aspectRatio(1.0, contentMode: .fit)
     }
 }
 
@@ -35,7 +36,7 @@ struct GreenPolygon: Shape {
         let mappedPoints = points.map { point in
             CGPoint(
                 x: rect.midX + point.x * rect.width / 6,
-                y: rect.midY - point.y * rect.height / 4
+                y: rect.minY + (1 - point.y) * rect.height / 4
             )
         }
 
@@ -64,7 +65,7 @@ struct WhitePolygon: Shape {
         let mappedPoints = points.map { point in
             CGPoint(
                 x: rect.midX + point.x * rect.width / 6,
-                y: rect.midY - point.y * rect.height / 4
+                y: rect.minY + (1 - point.y) * rect.height / 4
             )
         }
 

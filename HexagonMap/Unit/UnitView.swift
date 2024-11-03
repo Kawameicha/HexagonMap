@@ -33,10 +33,15 @@ struct UnitView: View {
                                 .frame(maxWidth: .infinity, alignment: .trailing)
                         }
 
-                        UnitFacing(unit: unit)
-                            .frame(width: 60, height: 40)
-                            .offset(y: -15)
                         GeometryReader { geometry in
+                            HStack {
+                                Spacer()
+                                UnitFacing(unit: unit)
+                                    .padding(-4)
+                                    .frame(width: geometry.size.width * 0.6, alignment: .center)
+                                Spacer()
+                            }
+
                             Text(unit.name)
                                 .font(.system(size: 8))
                                 .fontWeight(.regular)
@@ -79,24 +84,31 @@ struct UnitView: View {
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .foregroundStyle(unit.type == .foot ? .red : .blue)
 
-                        UnitSymbol(unit: unit)
-                            .frame(width: 20)
-                            .frame(maxWidth: .infinity, alignment: .center)
+                        GeometryReader { geometry in
+                            HStack {
+                                Spacer()
+                                VStack {
+                                    Spacer()
+                                    UnitSymbol(unit: unit)
+                                        .frame(width: geometry.size.width * 0.2, alignment: .center)
+                                }
+                                Spacer()
+                            }
+                        }
                     }
                 }
             }
             .padding(4)
-            .cornerRadius(4)
             .fontWeight(.bold)
             .foregroundStyle(.black)
         }
         .aspectRatio(1.0, contentMode: .fit)
         .background(RoundedRectangle(cornerRadius: 9, style: .continuous)
-            .fill(Color("\(unit.color)")))
+            .fill(Color("\(unit.army)")))
         .rotationEffect(rotationAngle(for: unit.orientation))
     }
 
-    func rotationAngle(for orientation: Unit.PieceOrientation) -> Angle {
+    func rotationAngle(for orientation: Unit.UnitOrientation) -> Angle {
         switch orientation {
         case .N: return .degrees(0)
         case .NE: return .degrees(60)

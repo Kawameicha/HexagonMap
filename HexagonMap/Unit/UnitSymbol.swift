@@ -12,8 +12,8 @@ struct UnitSymbol: View {
 
     var body: some View {
         ZStack {
-            switch unit.color {
-            case .german:
+            switch unit.army {
+            case .de:
                 CrossShape(width: 8.5)
                     .foregroundColor(.black)
 
@@ -28,7 +28,7 @@ struct UnitSymbol: View {
                         .font(.system(size: 10))
                         .foregroundColor(.yellow)
                 }
-            case .russian:
+            case .ru:
                 StarShape()
                     .fill(Color.red)
 

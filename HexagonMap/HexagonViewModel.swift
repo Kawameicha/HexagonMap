@@ -80,7 +80,7 @@ class HexagonViewModel: DropReceivableObservableObject {
                 defenseFlank: movingPiece.defenseFlank,
                 defenseFront: movingPiece.defenseFront,
                 type: movingPiece.type,
-                color: movingPiece.color,
+                army: movingPiece.army,
                 hexagon: destinationCoordinate
             )
             unitHexagon[pieceDidMoveFrom!]?.unit = nil
@@ -103,9 +103,9 @@ class HexagonViewModel: DropReceivableObservableObject {
 
     init() {
         let initialFootCoordinate = HexagonCoordinate(row: 3, col: 3)
-        let initialFootUnit = Unit(name: "Rifles '41", orientation: .SE, costAttack: 3, costMove: 1, attackSoft: 2, attackArmored: 0, defenseFlank: 11, defenseFront: 12, type: .foot, color: .german, hexagon: initialFootCoordinate)
+        let initialFootUnit = Unit(name: "Rifles '41", orientation: .SE, costAttack: 3, costMove: 1, attackSoft: 2, attackArmored: 0, defenseFlank: 11, defenseFront: 12, type: .foot, army: .de, hexagon: initialFootCoordinate)
         let initialTrackedCoordinate = HexagonCoordinate(row: 9, col: 9)
-        let initialTrackedUnit = Unit(name: "T-34a", orientation: .NW, costAttack: 5, costMove: 1, attackSoft: 5, attackArmored: 7, defenseFlank: 15, defenseFront: 19, type: .tracked, color: .russian, hexagon: initialTrackedCoordinate)
+        let initialTrackedUnit = Unit(name: "T-34a", orientation: .NW, costAttack: 5, costMove: 1, attackSoft: 5, attackArmored: 7, defenseFlank: 15, defenseFront: 19, type: .tracked, army: .ru, hexagon: initialTrackedCoordinate)
 
         let columns = 17
         let evenColumnRows = 12
