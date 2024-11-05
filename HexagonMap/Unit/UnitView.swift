@@ -8,71 +8,123 @@
 import SwiftUI
 
 struct UnitView: View {
-    let unit: Unit
+    @Bindable var unit: Unit
 
     var body: some View {
         ZStack(alignment: .center) {
             pieceImage()
                 .resizable()
-                .scaledToFit()
-                .padding(10)
+                .scaleEffect(0.5, anchor: .center)
 
             VStack {
-                HStack(alignment: .top) {
-                    ZStack(alignment: .top) {
-                        if let cost = unit.costAttack {
+                ZStack(alignment: .top) {
+                    UnitFacing(unit: unit)
+                        .padding(-4)
+
+                    HStack(alignment: .top) {
+                        if let cost = unit.turretUnit {
+                            Text("\(cost)")
+                                .background(Circle().fill(Color.white))
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        } else if let cost = unit.costAttack, let indirect = unit.indirectAttack {
+                            VStack {
+                                Text("\(cost)")
+                                Text("(\(indirect))")
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        } else if let cost = unit.costAttack {
                             Text("\(cost)")
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
 
-                        Spacer()
+                        Text(unit.name)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .fontWeight(.regular)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.3)
 
                         if let cost = unit.costMove {
                             Text("\(cost)")
                                 .foregroundStyle(unit.type == .foot ? .red : .blue)
                                 .frame(maxWidth: .infinity, alignment: .trailing)
                         }
-
-                        GeometryReader { geometry in
-                            HStack {
-                                Spacer()
-                                UnitFacing(unit: unit)
-                                    .padding(-4)
-                                    .frame(width: geometry.size.width * 0.6, alignment: .center)
-                                Spacer()
-                            }
-
-                            Text(unit.name)
-                                .font(.system(size: 8))
-                                .fontWeight(.regular)
-                                .frame(width: geometry.size.width, alignment: .center)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.5)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .center)
                     }
                 }
 
                 Spacer()
 
-                HStack(alignment: .bottom) {
-                    ZStack(alignment: .bottom) {
+                GeometryReader { geometry in
+                    HStack {
+                        Button(action: rotateCounterClockwise) {
+                            Image(systemName: "arrow.counterclockwise")
+                                .frame(width: geometry.size.width * 0.05, alignment: .center)
+                        }
+                        .clipShape(Capsule())
+
+                        Spacer()
+
+                        Button {
+                            unit.exhausted.toggle()
+                        } label: {
+                            Image(systemName: "play")
+                                .symbolVariant(unit.exhausted ? .none : .slash)
+                                .frame(width: geometry.size.width * 0.05, alignment: .center)
+                        }
+                        .clipShape(Capsule())
+
+                        Spacer()
+
+                        Button(action: rotateClockwise) {
+                            Image(systemName: "arrow.clockwise")
+                                .frame(width: geometry.size.width * 0.05, alignment: .center)
+                        }
+                        .clipShape(Capsule())
+                    }
+                    .background(
+                        Rectangle()
+                            .fill(.exhausted)
+                            .opacity(unit.exhausted == true ? 0.7 : 0)
+                    )
+                    .padding(-4)
+                }
+
+                Spacer()
+
+                ZStack(alignment: .bottom) {
+                    UnitSymbol(unit: unit)
+                        .scaleEffect(0.4, anchor: .bottom)
+
+                    HStack(alignment: .bottom) {
                         VStack {
                             if let attack = unit.attackSoft {
                                 Text("\(attack)")
+                                    .background(unit.crewedUnit ?? false ? .white : .clear)
                                     .foregroundStyle(.red)
                             }
                             if let attack = unit.attackArmored {
                                 Text("\(attack)")
+                                    .background(unit.crewedUnit ?? false ? .white : .clear)
                                     .foregroundStyle(.blue)
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                        Spacer()
+                        if let minRange = unit.minRange, let maxRange = unit.maxRange {
+                            Text("\(minRange)-\(maxRange)")
+                                .foregroundStyle(.yellow)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        } else if let range = unit.maxRange {
+                            Text("\(range)")
+                                .foregroundStyle(.yellow)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        }
 
                         VStack {
-                            if let defense = unit.defenseFlank {
+                            if let _ = unit.openVehicle, let defense = unit.defenseFlank {
+                                Text("\(defense)")
+                                    .background(.white)
+                                    .background{Rectangle().stroke(Color.red)}
+                            } else if let defense = unit.defenseFlank {
                                 Text("\(defense)")
                                     .foregroundStyle(.white)
                                     .background(unit.type == .foot ? .red : .blue)
@@ -83,18 +135,6 @@ struct UnitView: View {
                         }
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .foregroundStyle(unit.type == .foot ? .red : .blue)
-
-                        GeometryReader { geometry in
-                            HStack {
-                                Spacer()
-                                VStack {
-                                    Spacer()
-                                    UnitSymbol(unit: unit)
-                                        .frame(width: geometry.size.width * 0.2, alignment: .center)
-                                }
-                                Spacer()
-                            }
-                        }
                     }
                 }
             }
@@ -108,7 +148,18 @@ struct UnitView: View {
         .rotationEffect(rotationAngle(for: unit.orientation))
     }
 
-    func rotationAngle(for orientation: Unit.UnitOrientation) -> Angle {
+    // Rotate clockwise by moving to the next orientation case
+    func rotateClockwise() {
+        unit.orientation = unit.orientation.next()
+    }
+
+    // Rotate counterclockwise by moving to the previous orientation case
+    func rotateCounterClockwise() {
+        unit.orientation = unit.orientation.previous()
+    }
+
+    // Helper to get rotation angle based on orientation
+    func rotationAngle(for orientation: Unit.UnitFront) -> Angle {
         switch orientation {
         case .N: return .degrees(0)
         case .NE: return .degrees(60)
@@ -127,6 +178,32 @@ struct UnitView: View {
             return Image("tracked")
         case .wheeled:
             return Image("wheeled")
+        }
+    }
+}
+
+extension Unit.UnitFront {
+    // Method to get the next orientation, wrapping around if needed
+    func next() -> Unit.UnitFront {
+        switch self {
+        case .N: return .NE
+        case .NE: return .SE
+        case .SE: return .S
+        case .S: return .SW
+        case .SW: return .NW
+        case .NW: return .N
+        }
+    }
+
+    // Method to get the previous orientation, wrapping around if needed
+    func previous() -> Unit.UnitFront {
+        switch self {
+        case .N: return .NW
+        case .NE: return .N
+        case .SE: return .NE
+        case .S: return .SE
+        case .SW: return .S
+        case .NW: return .SW
         }
     }
 }

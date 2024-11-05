@@ -13,7 +13,7 @@ struct UnitFacing: View {
     var body: some View {
         ZStack {
             GreenPolygon()
-                .fill(Color.green)
+                .fill(Color.front)
 
             WhitePolygon()
                 .fill(Color.white)
@@ -27,10 +27,10 @@ struct GreenPolygon: Shape {
         var path = Path()
 
         let points: [CGPoint] = [
-            CGPoint(x: 4, y: 1),
+            CGPoint(x: 5, y: 1),
             CGPoint(x: 1.5, y: 0),
             CGPoint(x: -1.5, y: 0),
-            CGPoint(x: -4, y: 1)
+            CGPoint(x: -5, y: 1)
         ]
 
         let mappedPoints = points.map { point in

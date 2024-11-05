@@ -56,7 +56,7 @@ struct ContentView: View {
             ZStack {
                 Image("AtB_Planning_Map_1_Plains")
                     .resizable()
-                    .scaledToFill()
+                    .scaledToFit()
 
                 HexagonGrid(cells) { cell in
                     if let unitHexagon = model.unitHexagon[cell.offsetCoordinate] {
