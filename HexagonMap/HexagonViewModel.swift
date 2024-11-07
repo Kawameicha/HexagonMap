@@ -8,10 +8,13 @@
 import SwiftUI
 
 class HexagonViewModel: DropReceivableObservableObject {
-    typealias DropReceivable = UnitHexagon
     @Published var unitHexagon: [HexagonCoordinate: UnitHexagon] = [:]
     @Published var pieceDidMoveFrom: HexagonCoordinate? = nil
     @Published var selectedHexagon: HexagonCoordinate?
+
+    init(mission: Mission) {
+        unitHexagon = setupInitialUnits(for: mission)
+    }
 
     func selectHexagon(_ coordinate: HexagonCoordinate) {
             selectedHexagon = coordinate
@@ -113,33 +116,5 @@ class HexagonViewModel: DropReceivableObservableObject {
 
     func clearPieceOrigin() {
         pieceDidMoveFrom = nil
-    }
-
-    init() {
-        let initialFootCoordinate = HexagonCoordinate(row: 3, col: 3)
-        let initialFootUnit = Unit(name: "Rifles '41", type: .foot, army: .german, hexagon: initialFootCoordinate, orientation: .N, costAttack: 3, costMove: 1, attackSoft: 2, attackArmored: 0, maxRange: 5, defenseFlank: 11, defenseFront: 12)
-        let initialTrackedCoordinate = HexagonCoordinate(row: 9, col: 9)
-        let initialTrackedUnit = Unit(name: "T-34a", type: .tracked, army: .soviet, hexagon: initialTrackedCoordinate, orientation: .N, costAttack: 5, costMove: 1, attackSoft: 5, attackArmored: 7, maxRange: 8, defenseFlank: 15, defenseFront: 19)
-
-        let columns = 17
-        let evenColumnRows = 12
-        let oddColumnRows = 11
-
-        for column in 0..<columns {
-            let rows = column.isMultiple(of: 2) ? evenColumnRows : oddColumnRows
-            for row in 0..<rows {
-                let coordinate = HexagonCoordinate(row: row, col: column)
-                if coordinate == initialFootCoordinate {
-                    unitHexagon[coordinate] = UnitHexagon(
-                        id: coordinate, dropArea: nil, unit: initialFootUnit)
-                } else if coordinate == initialTrackedCoordinate {
-                    unitHexagon[coordinate] = UnitHexagon(
-                        id: coordinate, dropArea: nil, unit: initialTrackedUnit)
-                } else {
-                    unitHexagon[coordinate] = UnitHexagon(
-                        id: coordinate, dropArea: nil, unit: nil)
-                }
-            }
-        }
     }
 }
