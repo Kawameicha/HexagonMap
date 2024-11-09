@@ -79,6 +79,6 @@ struct WhitePolygon: Shape {
     }
 }
 
-#Preview {
-    UnitFacing(unit: Unit.mockGerman)
-}
+//#Preview {
+//    UnitFacing(unit: Unit.mockGerman)
+//}

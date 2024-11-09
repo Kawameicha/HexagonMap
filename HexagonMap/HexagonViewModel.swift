@@ -73,32 +73,15 @@ class HexagonViewModel: DropReceivableObservableObject {
             let movingPiece = unitHexagon[pieceDidMoveFrom!]?.unit
         {
 
+            let statsDictionary = loadUnitStatsFromFile()
             unitHexagon[destinationCoordinate]?.unit = Unit(
                 name: movingPiece.name,
-                suit: movingPiece.suit,
-                rank: movingPiece.rank,
-                game: movingPiece.game,
                 type: movingPiece.type,
                 army: movingPiece.army,
                 hexagon: destinationCoordinate,
                 orientation: movingPiece.orientation,
                 exhausted: movingPiece.exhausted,
-                costAttack: movingPiece.costAttack,
-                indirectAttack: movingPiece.indirectAttack,
-                turretUnit: movingPiece.turretUnit,
-                costMove: movingPiece.costMove,
-                moveBon1: movingPiece.moveBon1,
-                moveBon2: movingPiece.moveBon2,
-                defBonus: movingPiece.defBonus,
-                attackSoft: movingPiece.attackSoft,
-                attackArmored: movingPiece.attackArmored,
-                attackSort: movingPiece.attackSort,
-                crewedUnit: movingPiece.crewedUnit,
-                minRange: movingPiece.minRange,
-                maxRange: movingPiece.maxRange,
-                defenseFlank: movingPiece.defenseFlank,
-                defenseFront: movingPiece.defenseFront,
-                openVehicle: movingPiece.openVehicle
+                statsDictionary: statsDictionary
             )
             unitHexagon[pieceDidMoveFrom!]?.unit = nil
             clearPieceOrigin()

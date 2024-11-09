@@ -22,17 +22,17 @@ struct UnitView: View {
                         .padding(-4)
 
                     HStack(alignment: .top) {
-                        if let cost = unit.turretUnit {
+                        if let cost = unit.stats?.turretUnit {
                             Text("\(cost)")
                                 .background(Circle().fill(Color.white))
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                        } else if let cost = unit.costAttack, let indirect = unit.indirectAttack {
+                        } else if let cost = unit.stats?.costAttack, let indirect = unit.stats?.indirectAttack {
                             VStack {
                                 Text("\(cost)")
                                 Text("(\(indirect))")
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
-                        } else if let cost = unit.costAttack {
+                        } else if let cost = unit.stats?.costAttack {
                             Text("\(cost)")
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
@@ -43,7 +43,7 @@ struct UnitView: View {
                             .lineLimit(1)
                             .minimumScaleFactor(0.3)
 
-                        if let cost = unit.costMove {
+                        if let cost = unit.stats?.costMove {
                             Text("\(cost)")
                                 .foregroundStyle(unit.type == .foot ? .red : .blue)
                                 .frame(maxWidth: .infinity, alignment: .trailing)
@@ -96,40 +96,40 @@ struct UnitView: View {
 
                     HStack(alignment: .bottom) {
                         VStack {
-                            if let attack = unit.attackSoft {
+                            if let attack = unit.stats?.attackSoft {
                                 Text("\(attack)")
-                                    .background(unit.crewedUnit ?? false ? .white : .clear)
+                                    .background(unit.stats?.crewedUnit ?? false ? .white : .clear)
                                     .foregroundStyle(.red)
                             }
-                            if let attack = unit.attackArmored {
+                            if let attack = unit.stats?.attackArmored {
                                 Text("\(attack)")
-                                    .background(unit.crewedUnit ?? false ? .white : .clear)
+                                    .background(unit.stats?.crewedUnit ?? false ? .white : .clear)
                                     .foregroundStyle(.blue)
                             }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                        if let minRange = unit.minRange, let maxRange = unit.maxRange {
+                        if let minRange = unit.stats?.minRange, let maxRange = unit.stats?.maxRange {
                             Text("\(minRange)-\(maxRange)")
                                 .foregroundStyle(.yellow)
                                 .frame(maxWidth: .infinity, alignment: .center)
-                        } else if let range = unit.maxRange {
+                        } else if let range = unit.stats?.maxRange {
                             Text("\(range)")
                                 .foregroundStyle(.yellow)
                                 .frame(maxWidth: .infinity, alignment: .center)
                         }
 
                         VStack {
-                            if let _ = unit.openVehicle, let defense = unit.defenseFlank {
+                            if let _ = unit.stats?.openVehicle, let defense = unit.stats?.defenseFlank {
                                 Text("\(defense)")
                                     .background(.white)
                                     .background{Rectangle().stroke(Color.red)}
-                            } else if let defense = unit.defenseFlank {
+                            } else if let defense = unit.stats?.defenseFlank {
                                 Text("\(defense)")
                                     .foregroundStyle(.white)
                                     .background(unit.type == .foot ? .red : .blue)
                             }
-                            if let defense = unit.defenseFront {
+                            if let defense = unit.stats?.defenseFront {
                                 Text("\(defense)")
                             }
                         }
@@ -208,6 +208,6 @@ extension Unit.UnitFront {
     }
 }
 
-#Preview {
-    UnitView(unit: Unit.mockGerman)
-}
+//#Preview {
+//    UnitView(unit: Unit.mockGerman)
+//}
