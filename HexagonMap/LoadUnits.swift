@@ -1,3 +1,12 @@
+//
+//  LoadUnits.swift
+//  HexagonMap
+//
+//  Created by Christoph Freier on 10.11.24.
+//
+
+import Foundation
+
 func loadUnitStats(from data: Data) -> [UnitIdentifier: UnitStats] {
     do {
         let statsArray = try JSONDecoder().decode([UnitStats].self, from: data)
