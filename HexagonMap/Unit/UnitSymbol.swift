@@ -14,13 +14,13 @@ struct UnitSymbol: View {
         ZStack {
             switch unit.army {
             case .german:
-                CrossShape(width: 8.5)
+                CrossShape(widthFactor: 0.3)
                     .foregroundColor(.black)
 
-                CrossShape(width: 7.5)
+                CrossShape(widthFactor: 0.25)
                     .foregroundColor(.white)
 
-                CrossShape(width: 5.0)
+                CrossShape(widthFactor: 0.2)
                     .foregroundColor(.black)
             case .soviet:
                 StarShape()
@@ -32,10 +32,12 @@ struct UnitSymbol: View {
 }
 
 struct CrossShape: Shape {
-    var width: CGFloat
+    var widthFactor: CGFloat
 
     func path(in rect: CGRect) -> Path {
         var path = Path()
+
+        let width = min(rect.width, rect.height) * widthFactor
 
         let verticalRect = CGRect(
             x: rect.midX - width / 2,
@@ -101,11 +103,10 @@ struct StarShape: Shape {
     }
 }
 
-//#Preview {
-//    HStack {
-//        UnitSymbol(unit: Unit.mockGerman)
-//        UnitSymbol(unit: Unit.mockRussian)
-//    }
-//    .aspectRatio(1.0, contentMode: .fit)
-//    .frame(width: 50, height: 50)
-//}
+#Preview {
+    let statsDictionary = loadUnitStatsFromFile()
+    HStack {
+        UnitSymbol(unit: Unit(name: "", type: .foot, army: .german, statsDictionary: statsDictionary))
+        UnitSymbol(unit: Unit(name: "", type: .foot, army: .soviet, statsDictionary: statsDictionary))
+    }
+}

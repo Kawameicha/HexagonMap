@@ -62,6 +62,11 @@ class HexagonViewModel: DropReceivableObservableObject {
                 ]
                 return nearbyPositions.contains(hexagon) ? .accepted : .rejected
             }
+        case .control:
+            let nearbyPositions = [
+                HexagonCoordinate(row: origin.row, col: origin.col)
+            ]
+            return nearbyPositions.contains(hexagon) ? .accepted : .rejected
         }
     }
 

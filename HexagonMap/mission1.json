@@ -54,5 +54,12 @@
         "army": "soviet",
         "hexagon": { "row": 9, "col": 12 },
         "orientation": "NW"
+    },
+    {
+        "name": "Control",
+        "type": "control",
+        "army": "soviet",
+        "hexagon": { "row": 5, "col": 7 },
+        "orientation": "N"
     }
 ]

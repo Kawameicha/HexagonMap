@@ -104,6 +104,7 @@ enum UnitType: String, Decodable {
     case foot
     case tracked
     case wheeled
+    case control
     var id: Self { self }
     var name: String { rawValue.capitalized }
 }
