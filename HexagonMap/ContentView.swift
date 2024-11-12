@@ -20,14 +20,16 @@ struct ContentView: View {
     var body: some View {
         NavigationSplitView {
             if let selectedCoordinate = model.selectedHexagon,
-               let unit = model.unitHexagon[selectedCoordinate]?.unit {
+               let units = model.unitHexagon[selectedCoordinate]?.units {
                 VStack(alignment: .leading) {
-                    UnitView(unit: unit)
+                    ForEach(units) { unit in
+                        UnitView(units: [unit], unit: unit)
+                        Text("Unit: \(unit.name)")
+                    }
 
                     Spacer()
 
                     Text("Coordinate: \(selectedCoordinate)")
-                    Text("Unit: \(unit.name)")
                     // Add other unit properties here
                 }
                 .padding()

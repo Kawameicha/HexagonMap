@@ -33,13 +33,15 @@ class HexagonViewModel: DropReceivableObservableObject {
 
     private func getDropLegalState(at hexagon: HexagonCoordinate) -> DragState {
         guard let origin = pieceDidMoveFrom,
-            hexagon != origin,
-            let unit = unitHexagon[origin]?.unit
+              hexagon != origin,
+              let units = unitHexagon[origin]?.units,
+              !units.isEmpty
         else {
             return .none
         }
 
-        switch unit.type {
+        let unit = units.last
+        switch unit?.type {
         case .foot, .tracked, .wheeled:
             if origin.col.isMultiple(of: 2) {
                 let nearbyPositions = [
@@ -67,6 +69,8 @@ class HexagonViewModel: DropReceivableObservableObject {
                 HexagonCoordinate(row: origin.row, col: origin.col)
             ]
             return nearbyPositions.contains(hexagon) ? .accepted : .rejected
+        case .none:
+            return .none
         }
     }
 
@@ -74,12 +78,12 @@ class HexagonViewModel: DropReceivableObservableObject {
         if let destinationCoordinate = unitHexagon.first(where: {
             $0.value.dropArea?.contains(location) == true
         })?.key,
-            unitHexagon[destinationCoordinate]?.legalDropTarget == .accepted,
-            let movingPiece = unitHexagon[pieceDidMoveFrom!]?.unit
+           unitHexagon[destinationCoordinate]?.legalDropTarget == .accepted,
+           let movingPiece = unitHexagon[pieceDidMoveFrom!]?.units.last
         {
 
             let statsDictionary = loadUnitStatsFromFile()
-            unitHexagon[destinationCoordinate]?.unit = Unit(
+            unitHexagon[destinationCoordinate]?.addUnit(Unit(
                 name: movingPiece.name,
                 type: movingPiece.type,
                 army: movingPiece.army,
@@ -87,8 +91,8 @@ class HexagonViewModel: DropReceivableObservableObject {
                 orientation: movingPiece.orientation,
                 exhausted: movingPiece.exhausted,
                 statsDictionary: statsDictionary
-            )
-            unitHexagon[pieceDidMoveFrom!]?.unit = nil
+            ))
+            unitHexagon[pieceDidMoveFrom!]?.units.removeLast()
             clearPieceOrigin()
             setLegalDropTargets()
             return true

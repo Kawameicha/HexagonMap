@@ -50,7 +50,7 @@ func setupInitialUnits(for mission: Mission) -> [HexagonCoordinate: UnitHexagon]
             orientation: missionUnit.orientation,
             statsDictionary: statsDictionary
         )
-        unitHexagon[coordinate] = UnitHexagon(id: coordinate, dropArea: nil, unit: unit)
+        unitHexagon[coordinate] = UnitHexagon(id: coordinate, dropArea: nil, units: [unit])
     }
 
     // Fill in remaining hexagons with empty UnitHexagon instances
@@ -59,7 +59,7 @@ func setupInitialUnits(for mission: Mission) -> [HexagonCoordinate: UnitHexagon]
         for row in 0..<rows {
             let coordinate = HexagonCoordinate(row: row, col: column)
             if unitHexagon[coordinate] == nil {
-                unitHexagon[coordinate] = UnitHexagon(id: coordinate, dropArea: nil, unit: nil)
+                unitHexagon[coordinate] = UnitHexagon(id: coordinate, dropArea: nil, units: [])
             }
         }
     }

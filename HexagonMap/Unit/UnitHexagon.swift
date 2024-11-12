@@ -11,6 +11,10 @@ struct UnitHexagon: Identifiable, DropReceiver {
     let id: HexagonCoordinate
     var dropArea: CGRect? = nil
 
-    var unit: Unit? = nil
+    var units: [Unit] = []
     var legalDropTarget: DragState = .none
+
+    mutating func addUnit(_ unit: Unit) {
+        units.append(unit)
+    }
 }

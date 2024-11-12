@@ -35,8 +35,8 @@ struct HexagonView: View {
                     )
                     .opacity(hexagon.legalDropTarget == .accepted ? 1 : 0)
 
-                if let unit = hexagon.unit {
-                    UnitView(unit: unit)
+                if let unit = hexagon.units.last {
+                    UnitView(units: hexagon.units, unit: unit)
                         .frame(width: geometry.size.width * 0.7,
                                height: geometry.size.height * 0.7)
                         .dragable(

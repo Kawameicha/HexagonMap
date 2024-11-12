@@ -60,7 +60,7 @@ struct UnitStats: Decodable {
 }
 
 @Observable
-class Unit: Dragable {
+class Unit: Dragable, Identifiable {
     var name: String
     var game: UnitGame?
     var type: UnitType
